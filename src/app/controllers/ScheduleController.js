@@ -6,10 +6,14 @@ import User from '../models/User';
 
 class ScheduleController {
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     const schedules = await Schedule.findAll({
       where: { user_id: req.userId, canceled_at: null },
       order: ['date'],
       attributes: ['id', 'date'],
+      limit: 20,
+      offset: page ? (page - 1) * 20 : 0,
       include: [
         {
           model: User,
