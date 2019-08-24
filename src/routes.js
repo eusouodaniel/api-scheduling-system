@@ -13,13 +13,14 @@ import authMiddleware from './app/middlewares/auth';
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+routes.post('/users', UserController.store);
 
 routes.use(authMiddleware);
 routes.get('/diaries', DiaryController.index);
 routes.post('/files', upload.single('avatar'), FileController.store);
 routes.get('/notifications', NotificationController.index);
+routes.put('/notifications/:id', NotificationController.update);
 routes.get('/providers', ProviderController.index);
 routes.get('/schedules', ScheduleController.index);
 routes.post('/schedules', ScheduleController.store);
