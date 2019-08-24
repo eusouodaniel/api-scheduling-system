@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { format, startOfHour, parseISO, isBefore } from 'date-fns';
+import { format, startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import File from '../models/File';
 import Schedule from '../models/Schedule';
@@ -85,6 +85,27 @@ class ScheduleController {
       content: `Novo agendamento de ${user.name} no ${formattedDate}`,
       user: provider_id,
     });
+
+    return res.json(schedule);
+  }
+
+  async delete(req, res) {
+    const schedule = await Schedule.findByPk(req.params.id);
+
+    if (schedule.user_id !== req.userId) {
+      return res.status(401).json({ error: 'Not authorization' });
+    }
+
+    const dateWithSub = subHours(schedule.date, 1);
+    if (isBefore(dateWithSub, new Date())) {
+      return res
+        .status(401)
+        .json({ error: 'You can only cancel schedule 1 hour in advance' });
+    }
+
+    schedule.canceled_at = new Date();
+
+    await schedule.save();
 
     return res.json(schedule);
   }

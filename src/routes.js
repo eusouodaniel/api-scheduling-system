@@ -24,6 +24,7 @@ routes.put('/notifications/:id', NotificationController.update);
 routes.get('/providers', ProviderController.index);
 routes.get('/schedules', ScheduleController.index);
 routes.post('/schedules', ScheduleController.store);
+routes.delete('/schedules/:id', ScheduleController.delete);
 routes.put('/users', UserController.update);
 
 export default routes;
