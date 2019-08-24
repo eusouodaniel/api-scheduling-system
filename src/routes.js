@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import multerConfig from './config/multer';
+import DiaryController from './app/controllers/DiaryController';
 import FileController from './app/controllers/FileController';
 import ProviderController from './app/controllers/ProviderController';
 import SessionController from './app/controllers/SessionController';
@@ -15,6 +16,7 @@ routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
 routes.use(authMiddleware);
+routes.get('/diaries', DiaryController.index);
 routes.post('/files', upload.single('avatar'), FileController.store);
 routes.get('/providers', ProviderController.index);
 routes.get('/schedules', ScheduleController.index);
