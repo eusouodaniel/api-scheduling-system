@@ -5,6 +5,7 @@ import File from '../models/File';
 import Schedule from '../models/Schedule';
 import User from '../models/User';
 import Notification from '../schemas/Notification';
+import Mail from '../../lib/Mail';
 
 class ScheduleController {
   async index(req, res) {
@@ -90,7 +91,12 @@ class ScheduleController {
   }
 
   async delete(req, res) {
-    const schedule = await Schedule.findByPk(req.params.id);
+    const schedule = await Schedule.findByPk(req.params.id, {
+      include: [
+        { model: User, as: 'provider', attributes: ['name', 'email'] },
+        { model: User, as: 'user', attributes: ['name'] },
+      ],
+    });
 
     if (schedule.user_id !== req.userId) {
       return res.status(401).json({ error: 'Not authorization' });
@@ -106,6 +112,19 @@ class ScheduleController {
     schedule.canceled_at = new Date();
 
     await schedule.save();
+
+    await Mail.sendMail({
+      to: `${schedule.provider.name} <${schedule.provider.email}>`,
+      subject: 'Agendamento cancelado',
+      template: 'cancelSchedule',
+      context: {
+        provider: schedule.provider.name,
+        user: schedule.user.name,
+        date: format(schedule.date, "'Dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+      },
+    });
 
     return res.json(schedule);
   }
