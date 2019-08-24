@@ -4,8 +4,11 @@
 
 Node Scheduling System
 
-Para configurar o banco:
-- docker run --name scheduling -e POSTGRES_PASSWORD=root -p 5432:5432 -d postgres
+Para configurar o banco - SQL:
+- docker run --name scheduling_sql -e POSTGRES_PASSWORD=root -p 5432:5432 -d postgres
+
+Para configurar o banco - NoSQL:
+- docker run --name scheduling_mongo -p 27017:27017 -d -t mongo
 
 Instalando pacotes:
 - yarn
