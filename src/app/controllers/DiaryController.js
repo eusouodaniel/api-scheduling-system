@@ -43,7 +43,7 @@ class DiaryController {
       ],
     });
 
-    res.json(schedules);
+    return res.json(schedules);
   }
 }
 
