@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  postgres:
+    image: 'postgres'
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis:/var/lib/redis/data'
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+        - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DB_DATABASE}
+    volumes:
+        - mongo:/var/lib/mongo/data
+
+volumes:
+  redis:
+  postgres:
+  mongo:
