@@ -16,7 +16,7 @@ class ScheduleController {
     const schedules = await Schedule.findAll({
       where: { user_id: req.userId, canceled_at: null },
       order: ['date'],
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'already_passed', 'cancel_option'],
       limit: 20,
       offset: page ? (page - 1) * 20 : 0,
       include: [
