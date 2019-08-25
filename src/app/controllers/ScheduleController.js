@@ -1,6 +1,6 @@
-import * as Yup from 'yup';
 import { format, startOfHour, parseISO, isBefore, subHours } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import StoreSchedule from './rules/StoreSchedule';
 import File from '../models/File';
 import Schedule from '../models/Schedule';
 import User from '../models/User';
@@ -35,16 +35,11 @@ class ScheduleController {
       ],
     });
 
-    res.json(schedules);
+    return res.json(schedules);
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      date: Yup.date().required(),
-      provider_id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
+    if (!(await StoreSchedule.create(req.body))) {
       return res.status(400).json({ error: 'Validation field fails' });
     }
 
