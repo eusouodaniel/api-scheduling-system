@@ -10,6 +10,9 @@ Para configurar o banco - SQL:
 Para configurar o banco - NoSQL:
 - docker run --name scheduling_mongo -p 27017:27017 -d -t mongo
 
+Para configurar o banco - NoSQL(Cache):
+- docker run --name scheduling_redis -p 6379:6379 -d -t redis:alpine
+
 Instalando pacotes:
 - yarn
 

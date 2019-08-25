@@ -5,7 +5,9 @@ import File from '../models/File';
 import Schedule from '../models/Schedule';
 import User from '../models/User';
 import Notification from '../schemas/Notification';
-import Mail from '../../lib/Mail';
+
+import CancelMail from '../jobs/CancelMail';
+import Queue from '../../lib/Queue';
 
 class ScheduleController {
   async index(req, res) {
@@ -113,17 +115,8 @@ class ScheduleController {
 
     await schedule.save();
 
-    await Mail.sendMail({
-      to: `${schedule.provider.name} <${schedule.provider.email}>`,
-      subject: 'Agendamento cancelado',
-      template: 'cancelSchedule',
-      context: {
-        provider: schedule.provider.name,
-        user: schedule.user.name,
-        date: format(schedule.date, "'Dia' dd 'de' MMMM', às' H:mm'h'", {
-          locale: pt,
-        }),
-      },
+    Queue.add(CancelMail.key, {
+      schedule,
     });
 
     return res.json(schedule);
